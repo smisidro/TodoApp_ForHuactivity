@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { MOrganization, TTodo, TTodoUpdateOptions } from "../models/todo.model";
-import { getDB } from "../utils/mongo";
+import { getDB } from "../utils/prisma";
 
 export default class TodoRepo {
   static collection() {

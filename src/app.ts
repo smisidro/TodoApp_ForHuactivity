@@ -2,7 +2,7 @@
 import express from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import { connectToMongo } from "./utils/mongo";
+import { connectToMongo } from "./utils/prisma";
 import router from "./routes";
 import { isDev } from "./config";
 import setup from "./setup";
