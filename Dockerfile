@@ -1,10 +1,17 @@
-FROM node:20-alpine
+
+FROM node:24
+
 WORKDIR /app
-COPY package.json ./
-COPY prisma ./prisma
+
+COPY package*.json ./
+COPY prisma ./prisma/
+
 RUN npm install
+
 COPY . .
-RUN npx prisma generate
-ENV port=3000
-EXPOSE 3000 
-CMD ["npm", "start"]
+
+
+ENV PORT=3000
+EXPOSE 3000
+
+CMD ["npm", "start"] 

@@ -1,16 +1,24 @@
-import { TTodo, TTodoUpdateOptions } from "../models/todo.model";
 import TodoRepo from "../repositories/todo.repository";
 
 export default class TodoSvc {
-  static createTask(task: TTodo) {
-    return TodoRepo.createTask(task);
+
+  static async getAllTasks() {
+    return await TodoRepo.getAllTasks();
   }
 
-  static update(task: TTodoUpdateOptions) {
-    return TodoRepo.update(task);
+  static async createTask(task: { title: string }) {
+    return await TodoRepo.createTask(task);
   }
 
-  static delete(_id: string) {
-    return TodoRepo.delete(_id);
+  static async update(task: {
+    id: string;
+    title?: string;
+    completed?: boolean;
+  }) {
+    return await TodoRepo.update(task);
+  }
+
+  static async delete(id: string) {
+    return await TodoRepo.delete(id);
   }
 }

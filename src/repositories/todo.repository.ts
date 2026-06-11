@@ -1,39 +1,71 @@
-import { ObjectId } from "mongodb";
-import { MOrganization, TTodo, TTodoUpdateOptions } from "../models/todo.model";
-import { getDB } from "../utils/prisma";
+import { prisma } from "../utils/prisma";
+
+type TTodoCreateInput = {
+  title: string;
+};
+
+type TTodoUpdateOptions = {
+  id: string;
+  title?: string;
+  completed?: boolean;
+};
 
 export default class TodoRepo {
-  static collection() {
-    return getDB().collection("organizations");
-  }
 
-  static async createTask(organization: TTodo) {
-    return this.collection().insertOne(new MOrganization(organization));
-  }
-
-  static async update(organization: TTodoUpdateOptions) {
+  // CREATE
+  static async createTask(data: TTodoCreateInput) {
     try {
-      organization._id = new ObjectId(organization._id);
+      const newTodo = await prisma.todo.create({
+        data: {
+          title: data.title,
+          completed: false,
+        },
+      });
+
+      return newTodo;
     } catch (error) {
-      return Promise.reject("Invalid organization id.");
+      return Promise.reject("Failed to create task.");
     }
-    const { title, description } = organization;
-    const updatedAt = new Date();
-    return this.collection().updateOne({ _id: organization._id }, { $set: { title, description, updatedAt } });
   }
 
-  static async delete(_id: string | ObjectId) {
+  // READ ALL
+  static async getAllTasks() {
     try {
-      _id = new ObjectId(_id);
+      return await prisma.todo.findMany({
+        orderBy: { createdAt: "desc" },
+      });
     } catch (error) {
-      return Promise.reject("Invalid organization id.");
+      return Promise.reject("Failed to retrieve tasks.");
     }
+  }
 
+  // UPDATE
+  static async update(data: TTodoUpdateOptions) {
     try {
-      await this.collection().deleteOne({ _id: new ObjectId(_id) });
-      return Promise.resolve("Successfully deleted organization.");
+      const updatedTodo = await prisma.todo.update({
+        where: { id: data.id },
+        data: {
+          title: data.title,
+          completed: data.completed,
+        },
+      });
+
+      return updatedTodo;
     } catch (error) {
-      return Promise.reject("Server internal error.");
+      return Promise.reject("Invalid task id or task does not exist.");
+    }
+  }
+
+  // DELETE
+  static async delete(id: string) {
+    try {
+      await prisma.todo.delete({
+        where: { id },
+      });
+
+      return "Successfully deleted task.";
+    } catch (error) {
+      return Promise.reject("Invalid task id or task does not exist.");
     }
   }
 }

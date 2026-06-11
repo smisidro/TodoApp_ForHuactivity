@@ -1,30 +1,13 @@
-import { MongoClient, Db, TransactionOptions } from "mongodb";
-import { MONGO_URI, MONGO_DB } from "../config";
+import { PrismaClient } from '@prisma/client'
+import { Pool } from 'pg'
+import { PrismaPg } from '@prisma/adapter-pg'
 
-let db: Db;
-let mongoClient: MongoClient;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+})
 
-export const connectToMongo = async () => {
-  const client = new MongoClient(MONGO_URI, { maxPoolSize: 10, maxIdleTimeMS: 60000, connectTimeoutMS: 60000 });
+const adapter = new PrismaPg(pool)
 
-  await client.connect();
-  db = client.db(MONGO_DB);
-  mongoClient = client;
-};
-
-export const getDB = () => {
-  if (!db) {
-    throw new Error("Database not connected!");
-  }
-  return db;
-};
-
-export const useMongoClient = () => {
-  return mongoClient;
-};
-
-export const useTransactionOptions: TransactionOptions = {
-  readPreference: "primary",
-  readConcern: { level: "local" },
-  writeConcern: { w: "majority" },
-};
+export const prisma = new PrismaClient({
+  adapter,
+})

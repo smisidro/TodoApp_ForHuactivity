@@ -1,34 +1,32 @@
-import { ObjectId } from "mongodb";
+// src/models/todo.model.ts
 
+/**
+ * Core Type representing a fully formed Todo record from the PostgreSQL database.
+ */
 export type TTodo = {
-  _id?: ObjectId;
+  id: string;              
   title: string;
-  description: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  status?: string;
+  description?: string | null; 
+  isDone: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
+/**
+ * Payload required to create a brand new Todo.
+ */
+export type TTodoCreateInput = {
+  title: string;
+  description?: string | null;
+  isDone?: boolean;
+};
+
+/**
+ * Payload required when executing an update operation.
+ */
 export type TTodoUpdateOptions = {
-  _id?: ObjectId | string;
-  title: string;
-  description: string;
+  id: string; 
+  title?: string;
+  description?: string | null;
+  isDone?: boolean;
 };
-
-export class MOrganization implements Partial<TTodo> {
-  _id?: ObjectId;
-  title: string;
-  description: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  status?: string;
-
-  constructor({ _id = new ObjectId(), title = "", description = "", createdAt = new Date(), updatedAt, status = "active" } = {} as TTodo) {
-    this._id = _id;
-    this.title = title;
-    this.description = description;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-    this.status = status;
-  }
-}
