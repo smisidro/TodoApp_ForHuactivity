@@ -35,7 +35,13 @@ const limiter = rateLimit({
 if (!isDev) {
   app.use(limiter);
 }
-
+app.get("/", (req, res) => {
+  res.json({
+    status: "success",
+    message: "Welcome to the TodoApp API! Use /api/todos to access your tasks.",
+    environment: isDev ? "development" : "production"
+  });
+});
 // Base API routes
 app.use("/api", router);
 
