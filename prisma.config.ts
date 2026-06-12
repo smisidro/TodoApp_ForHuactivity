@@ -6,7 +6,7 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    // @ts-ignore - Bypasses the strict compiler check for process.env outside of /src
-    url: process.env.DATABASE_URL,
+    // Replace postgres, password, localhost, 5432, and your_db_name with your actual Postgres details
+      url: "postgresql://postgres:mysecretpassword@localhost:5432/postgres?schema=public",
   },
 });

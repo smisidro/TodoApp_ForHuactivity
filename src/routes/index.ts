@@ -1,5 +1,7 @@
+// src/routes/index.ts
 import express from "express";
-import todoRouter from "./todo.route"; // Or organization.route.ts
+import todoRoutes from "./todo.route";
+
 const router = express.Router();
 
 router.get("/v1", (_, res) => {
@@ -7,5 +9,8 @@ router.get("/v1", (_, res) => {
     message: "Welcome to my API",
   });
 });
-router.use("/todo", todoRouter);
+
+// Mount the todo routes
+router.use("/todos", todoRoutes);
+
 export default router;

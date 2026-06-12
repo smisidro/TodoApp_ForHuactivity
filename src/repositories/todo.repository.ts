@@ -1,38 +1,30 @@
-import { prisma } from "../utils/prisma";
+// src/repositories/todo.repository.ts
+import { prisma } from "../app";
 
-type TTodoCreateInput = {
-  title: string;
-};
-
-type TTodoUpdateOptions = {
-  id: string;
-  title?: string;
-  completed?: boolean;
-};
+type TTodoCreate = { title: string; description: string };
+type TTodoUpdate = { _id: string; title: string; description: string; status?: string };
 
 export default class TodoRepo {
-
   // CREATE
-  static async createTask(data: TTodoCreateInput) {
+  static async createTask(data: TTodoCreate) {
     try {
       const newTodo = await prisma.todo.create({
         data: {
           title: data.title,
-          completed: false,
+          description: data.description,
         },
       });
-
       return newTodo;
     } catch (error) {
       return Promise.reject("Failed to create task.");
     }
   }
 
-  // READ ALL
+  // READ (All tasks)
   static async getAllTasks() {
     try {
       return await prisma.todo.findMany({
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' } // Sorts tasks so the newest appear first
       });
     } catch (error) {
       return Promise.reject("Failed to retrieve tasks.");
@@ -40,16 +32,16 @@ export default class TodoRepo {
   }
 
   // UPDATE
-  static async update(data: TTodoUpdateOptions) {
+  static async update(data: TTodoUpdate) {
     try {
       const updatedTodo = await prisma.todo.update({
-        where: { id: data.id },
+        where: { id: data._id },
         data: {
           title: data.title,
-          completed: data.completed,
+          description: data.description,
+          status: data.status,
         },
       });
-
       return updatedTodo;
     } catch (error) {
       return Promise.reject("Invalid task id or task does not exist.");
@@ -57,13 +49,12 @@ export default class TodoRepo {
   }
 
   // DELETE
-  static async delete(id: string) {
+  static async delete(_id: string) {
     try {
       await prisma.todo.delete({
-        where: { id },
+        where: { id: _id },
       });
-
-      return "Successfully deleted task.";
+      return Promise.resolve("Successfully deleted task.");
     } catch (error) {
       return Promise.reject("Invalid task id or task does not exist.");
     }

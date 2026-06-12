@@ -1,24 +1,27 @@
+// src/services/todo.service.ts
 import TodoRepo from "../repositories/todo.repository";
 
+type TTodoCreate = { title: string; description: string };
+type TTodoUpdate = { _id: string; title: string; description: string; status?: string };
+
 export default class TodoSvc {
-
-  static async getAllTasks() {
-    return await TodoRepo.getAllTasks();
+  // CREATE
+  static createTask(task: TTodoCreate) {
+    return TodoRepo.createTask(task);
   }
 
-  static async createTask(task: { title: string }) {
-    return await TodoRepo.createTask(task);
+  // READ
+  static getAllTasks() {
+    return TodoRepo.getAllTasks();
   }
 
-  static async update(task: {
-    id: string;
-    title?: string;
-    completed?: boolean;
-  }) {
-    return await TodoRepo.update(task);
+  // UPDATE
+  static update(task: TTodoUpdate) {
+    return TodoRepo.update(task);
   }
 
-  static async delete(id: string) {
-    return await TodoRepo.delete(id);
+  // DELETE
+  static delete(_id: string) {
+    return TodoRepo.delete(_id);
   }
 }
